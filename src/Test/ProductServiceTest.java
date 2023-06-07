@@ -1,6 +1,7 @@
 package Test;
 
 import model.Product;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.ProductService;
@@ -23,11 +24,19 @@ public class ProductServiceTest {
     private ProductService service;
 
     /**
-     * Инициализирует сервис для тестирования
+     * Инициализирует сервис перед каждым тестовым случаем.
      * */
     @Before
     public void initMethod() {
         service = new ProductServiceImpl();
+    }
+
+    /**
+     * Удаляет ссылку на объект сервиса после каждого тестового случая
+     * */
+    @After
+    public void destroyMethod() {
+        service = null;
     }
 
     /**
@@ -49,7 +58,9 @@ public class ProductServiceTest {
     @Test
     public void deleteProductTest() {
         service.addProduct(PRODUCT_ONE);
+
         final boolean result = service.deleteProduct(PRODUCT_ONE);
+
         assertTrue(result);
     }
 
@@ -59,7 +70,9 @@ public class ProductServiceTest {
     @Test
     public void getProductNameByIdTest() {
         service.addProduct(PRODUCT_TWO);
+
         final String name = service.getProductNameById(PRODUCT_TWO.getId());
+
         assertEquals(PRODUCT_TWO.getName(), name);
     }
 
@@ -69,6 +82,7 @@ public class ProductServiceTest {
     @Test
     public void getProductNameByIdIsBlankTest() {
         final String name = service.getProductNameById("8");
+
         assertTrue(name.isBlank());
     }
 
@@ -78,10 +92,11 @@ public class ProductServiceTest {
     @Test
     public void findProductsByNameTest() {
         service.addProduct(PRODUCT_TWO);
+
         final String id = PRODUCT_TWO.getId();
         final String name = PRODUCT_TWO.getName();
 
-        final List<Product> products = service.findProductsByName(PRODUCT_TWO.getName());
+        final List<Product> products = service.findProductsByName(name);
 
         assertEquals(id, products.get(0).getId());
         assertEquals(name, products.get(0).getName());
@@ -93,7 +108,9 @@ public class ProductServiceTest {
     @Test
     public void findProductsByNameIsEmptyTest() {
         service.addProduct(PRODUCT_TWO);
+
         final List<Product> products = service.findProductsByName("some");
+
         assertTrue(products.isEmpty());
     }
 }
